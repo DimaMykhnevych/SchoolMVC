@@ -1,0 +1,27 @@
+﻿
+@model IEnumerable<Teacher>
+<div class="text-center">
+    <h1 class="display-4">Teachers</h1>
+    <div>
+        <a class="btn btn-info mb-3" href="/Teachers/Create">Create</a>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var teacher in Model)
+            {
+                <tr>
+                    <td>@teacher.Name</td>
+                    <td><a href="/Teachers/Edit/@teacher.Id">Edit</a></td>
+                    <td><a href="/Teachers/Delete/@teacher.Id">Delete</a></td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,56 @@
+﻿@model WebApplication1.Models.DisciplineViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Discipline</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <input type="hidden" name="Id" value="@Model.Discipline.Id" />
+            <div class="form-group">
+                <label for="Title">Title</label>
+                <input type="text" class="form-control" name="Title" value="@Model.Discipline.Title" />
+            </div>
+            <div class="form-group">
+                <label for="Annotation">Annotation</label>
+                <input type="text" class="form-control" name="Annotation" value="@Model.Discipline.Annotation" />
+            </div>
+            <div class="form-group">
+                <label for="TeacherId">Teacher</label>
+                <select name="TeacherId" value="@Model.Discipline.TeacherId" class="form-control">
+                    @foreach (var teacher in Model.Teachers)
+                    {
+                        int selectedTeacherId = teacher.Id == Model.Discipline.TeacherId ? teacher.Id : -1;
+                        @if (selectedTeacherId != -1)
+                        {
+                            <option selected="@selectedTeacherId"
+                                    value="@teacher.Id">
+                                @teacher.Name
+                            </option>
+                        }
+                        else
+                        {
+                            <option value="@teacher.Id">
+                                @teacher.Name
+                            </option>
+                        }
+                    }
+
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

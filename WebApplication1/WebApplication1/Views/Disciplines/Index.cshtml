@@ -1,0 +1,31 @@
+﻿@model IEnumerable<Discipline>
+<div class="text-center">
+    <h1 class="display-4">Disciplines</h1>
+    <div>
+        <a class="btn btn-info mb-3" href="/Disciplines/Create">Create New Discipline</a>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Annotation</th>
+                <th>Teacher</th>
+                <th colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var discipline in Model)
+            {
+                <tr>
+                    <td>@discipline.Title</td>
+                    <td>@discipline.Annotation</td>
+                    <td>@discipline.Teacher.Name</td>
+                    <td><a href="/Disciplines/Edit/@discipline.Id">Edit</a></td>
+                    <td><a href="/Disciplines/Delete/@discipline.Id">Delete</a></td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+
+</div>
