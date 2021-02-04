@@ -1,0 +1,20 @@
+﻿@model StudentDisciplinesViewModel
+@{
+    ViewData["Title"] = "Select Disciplines Page";
+}
+<div class="text-center">
+    <h2>Disciplines Selected by @Model.Student.Name </h2>
+    <form method="post" asp-action="SelectDisciplines" asp-route-id="@Model.Student.Id">
+        @foreach (Discipline disc in Model.Disciplines)
+        {
+            <div class="form-control">
+                @{
+                    bool isChecked = Model.Student.Disciplines.Contains(disc);
+                }
+                <input type="checkbox" name="@disc.Id" value="@disc.Id" checked="@isChecked" /> @disc.Title
+            </div>
+        }
+        <input type="submit" class="btn btn-success mt-3" />
+    </form>
+    <a asp-action="Index">Back to List</a>
+</div>
