@@ -32,61 +32,42 @@ namespace WebApplication1.Controllers
         public IActionResult SelectDisciplines(int id)
         {
             var student = _db.Students.Include(s => s.Disciplines).SingleOrDefault(s => s.Id == id);
-            var disciplines = _db.Disciplines;
+            var disciplines = _db.Disciplines.ToList();
+            List<SelectedDisciplineViewModel> selectedDisciplines = new List<SelectedDisciplineViewModel>();
+            foreach (var disc in disciplines)
+            {
+                selectedDisciplines.Add(new SelectedDisciplineViewModel 
+                { Discipline = disc, IsSelected = student.Disciplines.Contains(disc) });
+            }
             StudentDisciplinesViewModel studentDisciplines = new StudentDisciplinesViewModel
             {
-                Disciplines = disciplines,
+                Disciplines = selectedDisciplines,
                 Student = student,
             };
             return View(studentDisciplines);
         }
 
         [HttpPost]
-        public IActionResult SelectDisciplines(int id, IFormCollection collection)
+        public IActionResult SelectDisciplines(StudentDisciplinesViewModel studentDisciplines)
         {
-            var selectedDisciplines = collection.Keys.ToList();
-            selectedDisciplines.RemoveAt(selectedDisciplines.Count - 1);
-
-            var allDisciplinesIds = _db.Disciplines.Select(d => d.Id.ToString()).ToList();
-            var uncheckedDisciplines = allDisciplinesIds.Except(selectedDisciplines).ToList();
-
-            var currentStudent = _db.Students.Include(s => s.Disciplines).SingleOrDefault(s => s.Id == id);
-
-            if (selectedDisciplines.Any())
+            var student = _db.Students
+                .Include(s => s.Disciplines)
+                .SingleOrDefault(s => s.Id == studentDisciplines.Student.Id);
+            student.Disciplines.Clear();
+            foreach(var disc in studentDisciplines.Disciplines)
             {
-                AddStudentDiscipline(selectedDisciplines, currentStudent);
+                if (disc.IsSelected)
+                {
+                    var discipline = _db.Disciplines.SingleOrDefault(d => d.Id == disc.Discipline.Id);
+                    student.Disciplines.Add(discipline);
+                }
             }
-
-            if (uncheckedDisciplines.Any())
-            {
-                DeleteStudentDiscipline(uncheckedDisciplines, currentStudent);
-            }
+            _db.SaveChanges();
 
             return RedirectToAction("Index");
         }
 
-        private void AddStudentDiscipline(List<string> selectedDisciplines, Student currentStudent)
-        {
-            for (int i = 0; i < selectedDisciplines.Count; i++)
-            {
-                var disc = _db.Disciplines.SingleOrDefault(d =>
-                d.Id == Convert.ToInt32(selectedDisciplines[i]));
-                currentStudent.Disciplines.Add(disc);
-            }
-            _db.SaveChanges();
-        }
-
-        private void DeleteStudentDiscipline(List<string> uncheckedDisciplines, Student currentStudent)
-        {
-            for (int i = 0; i < uncheckedDisciplines.Count; i++)
-            {
-                var disc = _db.Disciplines.SingleOrDefault(d =>
-                d.Id == Convert.ToInt32(uncheckedDisciplines[i]));
-                currentStudent.Disciplines.Remove(disc);
-            }
-            _db.SaveChanges();
-        }
-
+        
         public IActionResult Privacy()
         {
             return View();

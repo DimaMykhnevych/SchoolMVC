@@ -4,15 +4,15 @@
 }
 <div class="text-center">
     <h2>Disciplines Selected by @Model.Student.Name </h2>
-    <form method="post" asp-action="SelectDisciplines" asp-route-id="@Model.Student.Id">
-        @foreach (Discipline disc in Model.Disciplines)
+    <form method="post" asp-action="SelectDisciplines">
+        @Html.HiddenFor(m => m.Student.Id)
+        @Html.HiddenFor(m => m.Student.Disciplines)
+        @for (int i = 0; i < Model.Disciplines.Count(); i++)
         {
-            <div class="form-control">
-                @{
-                    bool isChecked = Model.Student.Disciplines.Contains(disc);
-                }
-                <input type="checkbox" name="@disc.Id" value="@disc.Id" checked="@isChecked" /> @disc.Title
-            </div>
+        <div class="form-control">
+            @Html.HiddenFor(d => d.Disciplines[i].Discipline.Id)
+            @Html.CheckBoxFor(d => d.Disciplines[i].IsSelected) @Model.Disciplines[i].Discipline.Title
+        </div>
         }
         <input type="submit" class="btn btn-success mt-3" />
     </form>
