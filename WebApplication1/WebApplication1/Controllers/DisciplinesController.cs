@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using WebApplication1.Data;
@@ -24,42 +25,42 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var teachers = _db.Teachers.AsEnumerable();
-            return View(new DisciplineViewModel
-            {
-                Teachers = teachers,
-                Discipline = null
-            });
+            //var teachers = _db.Teachers.AsEnumerable();
+            ViewData["TeacherId"] = new SelectList(_db.Teachers, "Id", "Name");
+            return View();
         }
 
         [HttpPost]
         public IActionResult Create(Discipline discipline)
         {
-            var disc = discipline;
-            _db.Disciplines.Add(disc);
-            _db.SaveChanges();
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                _db.Disciplines.Add(discipline);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(discipline);
         }
 
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var teachers = _db.Teachers.AsEnumerable();
-            var discipline = _db.Disciplines.Include(t => t.Teacher).ToList().Find(d => d.Id == id);
-            return View(new DisciplineViewModel
-            {
-                Teachers = teachers,
-                Discipline = discipline
-            });
+            var discipline = _db.Disciplines.ToList().Find(d => d.Id == id);
+            ViewData["TeacherId"] = new SelectList(_db.Teachers, "Id", "Name", discipline.TeacherId);
+            return View(discipline);
         }
 
         [HttpPost]
         public IActionResult Edit(Discipline d)
         {
-            _db.Update(d);
-            _db.SaveChanges();
-
-            return RedirectToAction("Edit", new { id = d.Id});
+            ViewData["TeacherId"] = new SelectList(_db.Teachers, "Id", "Name", d.TeacherId);
+            if (ModelState.IsValid)
+            {
+                _db.Update(d);
+                _db.SaveChanges();
+                return RedirectToAction("Edit", new { id = d.Id });
+            }
+            return View(d);
         }
 
         [HttpGet]

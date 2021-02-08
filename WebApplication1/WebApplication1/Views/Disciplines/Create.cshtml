@@ -1,4 +1,4 @@
-﻿@model WebApplication1.Models.DisciplineViewModel
+﻿@model WebApplication1.Models.Discipline
 
 @{
     ViewData["Title"] = "Create";
@@ -11,22 +11,21 @@
 <div class="row">
     <div class="col-md-4">
         <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <label for="Title">Title</label>
                 <input type="text" name="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label for="Annotation">Annotation</label>
                 <input type="text" class="form-control" name="Annotation" />
+                <span asp-validation-for="Annotation" class="text-danger"></span>
+
             </div>
             <div class="form-group">
-                <label for="TeacherId">Teacher</label>
-                <select name="TeacherId" class="form-control">
-                    @foreach (var teacher in Model.Teachers)
-                    {
-                        <option value="@teacher.Id">@teacher.Name</option>
-                    }
-                </select>
+                <label asp-for="TeacherId" class="control-label"></label>
+                <select asp-for="TeacherId" class="form-control" asp-items="ViewBag.TeacherId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -38,3 +37,7 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

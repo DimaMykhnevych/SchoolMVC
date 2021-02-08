@@ -1,4 +1,4 @@
-﻿@model WebApplication1.Models.DisciplineViewModel
+﻿@model WebApplication1.Models.Discipline
 
 @{
     ViewData["Title"] = "Edit";
@@ -11,37 +11,42 @@
 <div class="row">
     <div class="col-md-4">
         <form method="post">
-            <input type="hidden" name="Id" value="@Model.Discipline.Id" />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" name="Id" value="@Model.Id" />
             <div class="form-group">
                 <label for="Title">Title</label>
-                <input type="text" class="form-control" name="Title" value="@Model.Discipline.Title" />
+                <input type="text" class="form-control" name="Title" value="@Model.Title" />
+                <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label for="Annotation">Annotation</label>
-                <input type="text" class="form-control" name="Annotation" value="@Model.Discipline.Annotation" />
+                <input type="text" class="form-control" name="Annotation" value="@Model.Annotation" />
+                <span asp-validation-for="Annotation" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label for="TeacherId">Teacher</label>
-                <select name="TeacherId" value="@Model.Discipline.TeacherId" class="form-control">
-                    @foreach (var teacher in Model.Teachers)
-                    {
-                        int selectedTeacherId = teacher.Id == Model.Discipline.TeacherId ? teacher.Id : -1;
-                        @if (selectedTeacherId != -1)
-                        {
-                            <option selected="@selectedTeacherId"
-                                    value="@teacher.Id">
-                                @teacher.Name
-                            </option>
-                        }
-                        else
-                        {
-                            <option value="@teacher.Id">
-                                @teacher.Name
-                            </option>
-                        }
-                    }
+                <label asp-for="TeacherId" class="control-label"></label>
+                <select asp-for="TeacherId" class="form-control" asp-items="ViewBag.TeacherId"></select>
+                @*<select name="TeacherId" value="@Model.Discipline.TeacherId" class="form-control">
+            @foreach (var teacher in Model.Teachers)
+            {
+                int selectedTeacherId = teacher.Id == Model.Discipline.TeacherId ? teacher.Id : -1;
+                @if (selectedTeacherId != -1)
+                {
+                    <option selected="@selectedTeacherId"
+                            value="@teacher.Id">
+                        @teacher.Name
+                    </option>
+                }
+                else
+                {
+                    <option value="@teacher.Id">
+                        @teacher.Name
+                    </option>
+                }
+            }
 
-                </select>
+        </select>*@
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -54,3 +59,6 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

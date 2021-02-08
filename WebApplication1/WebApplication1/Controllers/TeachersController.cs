@@ -25,12 +25,16 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(string name)
+        public IActionResult Create(Teacher t)
         {
-            var teacher = new Teacher { Name = name };
-            _db.Teachers.Add(teacher);
-            _db.SaveChanges();
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                var teacher = new Teacher { Name = t.Name };
+                _db.Teachers.Add(teacher);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View();
         }
 
         [HttpGet]
@@ -43,10 +47,15 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public IActionResult Edit(Teacher t)
         {
-            var teacher = _db.Teachers.Find(t.Id);
-            teacher.Name = t.Name;
-            _db.SaveChanges();
-            return View(teacher);
+            if (ModelState.IsValid)
+            {
+                var teacher = _db.Teachers.Find(t.Id);
+                teacher.Name = t.Name;
+                _db.SaveChanges();
+                return View(teacher);
+            }
+            return View(t);
+
         }
 
         [HttpGet]
